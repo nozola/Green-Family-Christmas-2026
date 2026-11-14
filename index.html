@@ -89,7 +89,7 @@ h2{font-family:"Cormorant SC",Georgia,serif;font-weight:600;color:var(--gold);le
 // 1) Paste your Apps Script Web App URL between the quotes:
 const API_URL = "https://script.google.com/macros/s/AKfycbxgkSRODixBPLB-k4o_7AQ912QbfD0gz-xZQxqnPY6Ulzx_RcGIbGb95HQlEPByngzo7w/exec";
 
-const FOOD=[["eggs","Eggs","🍳"],["waffles","Waffles","🧇"],["syrup","Syrup Ingredients","🍓","Homemade strawberry syrup"],["bacon","Bacon","🥓"],["sausage","Sausage","🌭"],["potatoes","Potatoes","🥔"],["cider","Sparkling Cider","🍾"],["cream","Whipped Cream","🍦","Condiment"],["ketchup","Ketchup","🍅","Condiment"],["hot","Hot Sauce","🌶️","Condiment"]];
+const FOOD=[["eggs","Eggs","🍳"],["waffles","Waffles","🧇"],["syrup","Syrup Ingredients","🍓","Homemade strawberry syrup"],["bacon","Bacon","🥓"],["sausage","Sausage","🌭"],["potatoes","Potatoes","🥔"],["cider","Sparkling Cider","🍾"],["cream","Whipped Cream","🍦","Condiment"],["ketchup","Ketchup","🍅","Condiment"],["hot","Hot Sauce","🌶️","Condiment"],["plates","Plates & Utensils","🍽️","Disposable"]];
 const CREW=[["c-eggs","Cook the Eggs","🍳"],["c-waffles","Cook the Waffles","🧇"],["c-syrup","Cook the Syrup","🍓"],["c-meat","Cook Bacon & Sausage","🥓"],["c-pot","Cook the Potatoes","🥔"],["x-kitchen","Kitchen & Counters","🧽","Cleanup"],["x-trash","Trash & Tables","🗑️","Cleanup"]];
 let state={},me="",busy=false;
 try{me=localStorage.getItem("gfc-name")||""}catch(e){}
@@ -97,7 +97,7 @@ const $=id=>document.getElementById(id),nameEl=$("name");nameEl.value=me;
 nameEl.addEventListener("input",()=>{me=nameEl.value.trim();try{localStorage.setItem("gfc-name",me)}catch(e){}});
 function say(t){$("msg").textContent=t}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-const EVENTS=[["r1","❄️","Winstice Bags","9–10 AM · when everyone wakes up",true],["r2","🧇","Main Meal","12:00 PM · menu below",true],["r3","🎁","Gift Exchange Game","2:00 PM · after the meal<br>Gift value: around $15–$30",true]];
+const EVENTS=[["r1","❄️","Winstice Bags","9–10 AM · when everyone wakes up",true],["r2","🧇","Main Meal","12:00 PM · menu below",true],["r3","🎁","Gift Exchange Game","2:00 PM · after the meal<br>Gift value: around $50",true]];
 function renderSched(){
   const keep={},act=document.activeElement&&document.activeElement.id;["r1","r2","r3"].forEach(p=>{const i=$("ra-"+p);if(i)keep[p]=i.value});
   $("sched").innerHTML=EVENTS.map(([p,ico,t,when,rsvp])=>{
@@ -122,7 +122,7 @@ function render(){
     `<div class="row done"><div class="ico">🎁</div><div class="t">${esc(k.slice(2))}<small>Something extra</small></div><button class="pill taken" data-id="${esc(k)}" data-crew="0">${esc(state[k])} ✓</button></div>`).join("");
   const got=FOOD.filter(f=>state[f[0]]).length;
   $("bar").style.width=got/FOOD.length*100+"%";
-  $("cnt").textContent=got+" of "+FOOD.length+" menu items claimed";
+  $("cnt").textContent=got+" of "+FOOD.length+" items claimed";
 }
 async function load(){
   if(!API_URL||busy)return;
