@@ -38,28 +38,45 @@ h2{font-family:"Cormorant SC",Georgia,serif;font-weight:600;color:var(--gold);le
 .bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .4s}
 .cnt{text-align:center;font-size:14px;opacity:.8;margin:6px 0 0}
 .msg{text-align:center;font-size:15px;color:#ffd9a0;min-height:20px;margin:10px 0 0}
+.ico{font-size:22px;width:30px;text-align:center}
+.oform{display:flex;gap:8px;margin-top:12px}
+.oform input{flex:1;min-width:0;background:#00000030;border:1px solid var(--gold);color:var(--cream);font:inherit;padding:8px 12px;border-radius:2px}
+.oform input::placeholder{color:#f6ecde99}
+.ev{border:1px solid #d4b36a66;padding:12px;margin:10px 0;background:#00000018}
+.evh{display:flex;gap:10px;align-items:center}.evh b{font-weight:600;font-size:20px}.evh small{display:block;opacity:.75;font-size:14px}
+.cnum{margin-left:auto;text-align:center;color:var(--gold);font-size:26px;line-height:1}.cnum small{font-family:"Cormorant SC",serif;letter-spacing:.1em;font-size:11px;color:var(--cream)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{border:1px solid #d4b36a99;border-radius:99px;padding:2px 11px;font:inherit;font-size:15px;background:transparent;color:var(--cream);cursor:pointer}
+.ract{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.ract input{flex:1;min-width:120px;background:#00000030;border:1px solid var(--gold);color:var(--cream);font:inherit;padding:6px 10px;border-radius:2px}
+.ract input::placeholder{color:#f6ecde99}
 .foot{text-align:center;color:var(--gold);margin-top:22px;letter-spacing:.4em}
 </style>
 </head>
 <body>
 <div class="wrap"><div class="card">
   <div class="stars">✦ ✧ ✦ ✧ ✦</div>
-  <p class="eyebrow">You are invited to our</p>
+  <p class="eyebrow">The Green Family</p>
   <h1>Christmas</h1>
   <p class="party">Party</p>
-  <p class="sub">The Green Family · Dress in your holiday best</p>
-  <p class="when">Friday, December <b>25</b> at Noon</p>
-  <p class="sub">Address &amp; RSVP details to come</p>
-
-  <div class="menu"><span>On the menu:</span> eggs · waffles · syrup · bacon · sausage · potatoes · sparkling cider<br><span>Condiments:</span> whipped cream · ketchup · hot sauce</div>
+  <p class="when">Friday, December <b>25</b></p>
+  <p class="sub">At the Parents’ House</p>
 
   <div class="who"><input id="name" placeholder="Your name" maxlength="30" autocomplete="given-name"></div>
   <div class="msg" id="msg">Type your name, then tap to claim a spot.</div>
+
+  <h2>✦ The Day ✦</h2>
+  <div id="sched"></div>
+
+  <div class="menu"><span>On the Menu · Noon</span><br>🍳 Eggs · 🧇 Waffles · 🍓 Syrup · 🥓 Bacon · 🌭 Sausage · 🥔 Potatoes · 🍾 Sparkling Cider<br><span>Condiments</span><br>🍦 Whipped Cream · 🍅 Ketchup · 🌶️ Hot Sauce</div>
+
 
   <h2>✦ Who’s Buying ✦</h2>
   <p class="note">Open to everyone</p>
   <div class="bar"><i id="bar"></i></div><div class="cnt" id="cnt"></div>
   <div id="food"></div>
+  <div id="other"></div>
+  <div class="oform"><input id="oitem" placeholder="Bringing something else? What is it?" maxlength="30"><button class="pill" id="oadd">Add</button></div>
 
   <h2>✦ Kitchen Crew ✦</h2>
   <p class="note">Cooking &amp; cleanup — the Green men’s tradition</p>
@@ -72,22 +89,40 @@ h2{font-family:"Cormorant SC",Georgia,serif;font-weight:600;color:var(--gold);le
 // 1) Paste your Apps Script Web App URL between the quotes:
 const API_URL = "https://script.google.com/macros/s/AKfycbxgkSRODixBPLB-k4o_7AQ912QbfD0gz-xZQxqnPY6Ulzx_RcGIbGb95HQlEPByngzo7w/exec";
 
-const FOOD=[["eggs","Eggs"],["waffles","Waffles"],["syrup","Syrup"],["bacon","Bacon"],["sausage","Sausage"],["potatoes","Potatoes"],["cider","Sparkling cider"],["cream","Whipped cream","condiment"],["ketchup","Ketchup","condiment"],["hot","Hot sauce","condiment"]];
-const CREW=[["c-eggs","Cook the eggs"],["c-waffles","Cook the waffles"],["c-meat","Cook bacon & sausage"],["c-pot","Cook the potatoes"],["x-dish","Dishes","cleanup"],["x-kitchen","Kitchen & counters","cleanup"],["x-trash","Trash & tables","cleanup"]];
+const FOOD=[["eggs","Eggs","🍳"],["waffles","Waffles","🧇"],["syrup","Syrup Ingredients","🍓","Homemade strawberry syrup"],["bacon","Bacon","🥓"],["sausage","Sausage","🌭"],["potatoes","Potatoes","🥔"],["cider","Sparkling Cider","🍾"],["cream","Whipped Cream","🍦","Condiment"],["ketchup","Ketchup","🍅","Condiment"],["hot","Hot Sauce","🌶️","Condiment"]];
+const CREW=[["c-eggs","Cook the Eggs","🍳"],["c-waffles","Cook the Waffles","🧇"],["c-syrup","Cook the Syrup","🍓"],["c-meat","Cook Bacon & Sausage","🥓"],["c-pot","Cook the Potatoes","🥔"],["x-kitchen","Kitchen & Counters","🧽","Cleanup"],["x-trash","Trash & Tables","🗑️","Cleanup"]];
 let state={},me="",busy=false;
 try{me=localStorage.getItem("gfc-name")||""}catch(e){}
 const $=id=>document.getElementById(id),nameEl=$("name");nameEl.value=me;
 nameEl.addEventListener("input",()=>{me=nameEl.value.trim();try{localStorage.setItem("gfc-name",me)}catch(e){}});
 function say(t){$("msg").textContent=t}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+const EVENTS=[["r1","🛍️","Winstice Bags","9–10 AM · when everyone wakes up",true],["r2","🍳","Main Meal","12:00 PM · menu below",true],["r3","🎁","Gift Exchange Game","2:00 PM · after the meal<br>Gift value: around $15–$30",true]];
+function renderSched(){
+  const keep={},act=document.activeElement&&document.activeElement.id;["r1","r2","r3"].forEach(p=>{const i=$("ra-"+p);if(i)keep[p]=i.value});
+  $("sched").innerHTML=EVENTS.map(([p,ico,t,when,rsvp])=>{
+    let h=`<div class="ev"><div class="evh"><div class="ico">${ico}</div><div><b>${t}</b><small>${when}</small></div>`;
+    if(rsvp){
+      const keys=Object.keys(state).filter(k=>k.startsWith(p+"~")).sort();
+      const mine=me&&keys.some(k=>k.slice(p.length+1).toLowerCase()===me.toLowerCase());
+      h+=`<div class="cnum">${keys.length}<br><small>COMING</small></div></div>`;
+      h+=`<div class="chips">${keys.map(k=>`<button class="chip" data-rm="${esc(k)}">${esc(k.slice(p.length+1))} ✕</button>`).join("")}</div>`;
+      h+=`<div class="ract"><button class="pill${mine?" taken":""}" data-rme="${p}">${mine?"You’re in ✓":"Count me in"}</button><input id="ra-${p}" placeholder="Add someone else’s name" maxlength="30"><button class="pill" data-radd="${p}">Add</button></div>`;
+    }else h+=`</div>`;
+    return h+`</div>`}).join("");
+  Object.keys(keep).forEach(p=>{const i=$("ra-"+p);if(i){i.value=keep[p];if(act==="ra-"+p)i.focus()}});
+}
 function render(){
-  const mk=(list,crew)=>list.map(([id,label,sub])=>{
+  renderSched();
+  const mk=(list,crew)=>list.map(([id,label,ico,sub])=>{
     const n=state[id];
-    return `<div class="row${n?" done":""}"><div class="t">${label}${sub?`<small>${sub}</small>`:""}</div><button class="pill${n?" taken":""}" data-id="${id}" data-crew="${crew?1:0}">${n?esc(n)+" ✓":"Claim"}</button></div>`}).join("");
+    return `<div class="row${n?" done":""}"><div class="ico">${ico}</div><div class="t">${label}${sub?`<small>${sub}</small>`:""}</div><button class="pill${n?" taken":""}" data-id="${id}" data-crew="${crew?1:0}">${n?esc(n)+" ✓":"Claim"}</button></div>`}).join("");
   $("food").innerHTML=mk(FOOD,false);$("crew").innerHTML=mk(CREW,true);
+  $("other").innerHTML=Object.keys(state).filter(k=>k.startsWith("o~")).map(k=>
+    `<div class="row done"><div class="ico">🎁</div><div class="t">${esc(k.slice(2))}<small>Something extra</small></div><button class="pill taken" data-id="${esc(k)}" data-crew="0">${esc(state[k])} ✓</button></div>`).join("");
   const got=FOOD.filter(f=>state[f[0]]).length;
   $("bar").style.width=got/FOOD.length*100+"%";
-  $("cnt").textContent=got+" of "+FOOD.length+" food items claimed";
+  $("cnt").textContent=got+" of "+FOOD.length+" menu items claimed";
 }
 async function load(){
   if(!API_URL||busy)return;
@@ -118,6 +153,39 @@ document.addEventListener("click",async e=>{
     const j=await send({action:"claim",slot:id,name:me});
     say(j.ok?"You’re in, "+me+"! ✦":(j.error||"Someone just took that one."));
   }catch(err){say("Couldn’t save that — please try again.")}
+});
+async function rsvp(p,nm){
+  if(!API_URL){say("Setup needed: add your Apps Script URL to API_URL.");return}
+  try{const j=await send({action:"claim",slot:p+"~"+nm,name:nm});say(j.ok?nm+" is on the list! ✦":nm+" is already on the list.")}
+  catch(e){say("Couldn’t save that — please try again.")}
+}
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("[data-rme],[data-radd],[data-rm]");if(!t)return;
+  if(t.dataset.rme){
+    const p=t.dataset.rme;
+    if(!me){say("Please enter your name first.");nameEl.focus();return}
+    const k=Object.keys(state).find(k=>k.startsWith(p+"~")&&k.slice(p.length+1).toLowerCase()===me.toLowerCase());
+    if(k){try{await send({action:"release",slot:k,name:state[k]});say("Removed — no problem.")}catch(err){say("Couldn’t save that — please try again.")}}
+    else rsvp(p,me);
+  }else if(t.dataset.radd){
+    const p=t.dataset.radd,inp=$("ra-"+p),nm=inp.value.trim().replace(/\s+/g," ");
+    if(!nm){say("Type their name first.");return}
+    await rsvp(p,nm);inp.value="";
+  }else if(t.dataset.rm){
+    const k=t.dataset.rm,nm=state[k]||"";
+    if(confirm("Remove "+nm+" from the list?")){try{await send({action:"release",slot:k,name:nm});say("Removed.")}catch(err){say("Couldn’t save that — please try again.")}}
+  }
+});
+$("oadd").addEventListener("click",async()=>{
+  const item=$("oitem").value.trim().replace(/\s+/g," ");
+  if(!API_URL){say("Setup needed: add your Apps Script URL to API_URL.");return}
+  if(!me){say("Please enter your name first.");nameEl.focus();return}
+  if(!item){say("Type what you’re bringing first.");return}
+  const id="o~"+item.slice(0,30);
+  try{
+    const j=await send({action:"claim",slot:id,name:me});
+    if(j.ok){$("oitem").value="";say("Thanks, "+me+"! ✦")}else say(j.error||"Someone already listed that.");
+  }catch(e){say("Couldn’t save that — please try again.")}
 });
 render();
 if(!API_URL)say("Setup needed: add your Apps Script URL to API_URL.");
