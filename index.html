@@ -79,8 +79,9 @@ h2{font-family:"Cormorant SC",Georgia,serif;font-weight:600;color:var(--gold);le
   <div class="oform"><input id="oitem" placeholder="Bringing something else? What is it?" maxlength="30"><button class="pill" id="oadd">Add</button></div>
 
   <h2>✦ Kitchen Crew ✦</h2>
-  <p class="note">Cooking &amp; cleanup — the Green men’s tradition</p>
+  <p class="note">Cooking — the Green men’s tradition</p>
   <div id="crew"></div>
+  <p class="note" style="margin-top:14px">🧽 Cleanup afterward will be handled by the Green men.</p>
 
   <div class="foot">✦ ✧ ✦</div>
 </div></div>
@@ -90,7 +91,7 @@ h2{font-family:"Cormorant SC",Georgia,serif;font-weight:600;color:var(--gold);le
 const API_URL = "https://script.google.com/macros/s/AKfycbxgkSRODixBPLB-k4o_7AQ912QbfD0gz-xZQxqnPY6Ulzx_RcGIbGb95HQlEPByngzo7w/exec";
 
 const FOOD=[["eggs","Eggs","🍳"],["waffles","Waffles","🧇"],["syrup","Syrup Ingredients","🍓","Homemade strawberry syrup"],["bacon","Bacon","🥓"],["sausage","Sausage","🌭"],["potatoes","Potatoes","🥔"],["cider","Sparkling Cider","🍾"],["cream","Whipped Cream","🍦","Condiment"],["ketchup","Ketchup","🍅","Condiment"],["hot","Hot Sauce","🌶️","Condiment"],["plates","Plates & Utensils","🍽️","Disposable"]];
-const CREW=[["c-eggs","Cook the Eggs","🍳"],["c-waffles","Cook the Waffles","🧇"],["c-syrup","Cook the Syrup","🍓"],["c-meat","Cook Bacon & Sausage","🥓"],["c-pot","Cook the Potatoes","🥔"],["x-kitchen","Kitchen & Counters","🧽","Cleanup"],["x-trash","Trash & Tables","🗑️","Cleanup"]];
+const CREW=[["c-eggs","Cook the Eggs","🍳"],["c-waffles","Cook the Waffles","🧇"],["c-syrup","Cook the Syrup","🍓"],["c-meat","Cook Bacon & Sausage","🥓"],["c-pot","Cook the Potatoes","🥔"]];
 let state={},me="",busy=false;
 try{me=localStorage.getItem("gfc-name")||""}catch(e){}
 const $=id=>document.getElementById(id),nameEl=$("name");nameEl.value=me;
