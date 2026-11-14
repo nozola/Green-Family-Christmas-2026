@@ -97,7 +97,7 @@ const $=id=>document.getElementById(id),nameEl=$("name");nameEl.value=me;
 nameEl.addEventListener("input",()=>{me=nameEl.value.trim();try{localStorage.setItem("gfc-name",me)}catch(e){}});
 function say(t){$("msg").textContent=t}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-const EVENTS=[["r1","❄️","Winstice Bags","9–10 AM · when everyone wakes up",true],["r2","🍳","Main Meal","12:00 PM · menu below",true],["r3","🎁","Gift Exchange Game","2:00 PM · after the meal<br>Gift value: around $15–$30",true]];
+const EVENTS=[["r1","❄️","Winstice Bags","9–10 AM · when everyone wakes up",true],["r2","🧇","Main Meal","12:00 PM · menu below",true],["r3","🎁","Gift Exchange Game","2:00 PM · after the meal<br>Gift value: around $15–$30",true]];
 function renderSched(){
   const keep={},act=document.activeElement&&document.activeElement.id;["r1","r2","r3"].forEach(p=>{const i=$("ra-"+p);if(i)keep[p]=i.value});
   $("sched").innerHTML=EVENTS.map(([p,ico,t,when,rsvp])=>{
